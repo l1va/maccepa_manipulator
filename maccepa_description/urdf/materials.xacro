@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Materials for sdf fallback (not used by Gazebo) -->
+    <material name="blue">
+        <color rgba="0.0 0.0 0.8 1.0"/>
+    </material>
+
+    <material name="green">
+        <color rgba="0.0 0.8 0.0 1.0"/>
+    </material>
+
+    <material name="red">
+        <color rgba="0.8 0.0 0.0 1.0"/>
+    </material>
+
+
+    <!-- Gazebo light emitting materials -->
+    <xacro:macro name="gazebo_emissive_color" params="rgba reference">
+        <gazebo reference="${reference}">
+            <visual>
+                <material>
+                    <ambient>${rgba}</ambient>
+                    <diffuse>${rgba}</diffuse>
+                    <specular>0 0 0 0</specular>
+                    <emissive>${rgba}</emissive>
+                </material>
+            </visual>
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:macro name="gazebo_green" params="reference">
+        <gazebo_emissive_color reference="${reference}" rgba="0.0 1.0 0.0 1"/>
+    </xacro:macro>
+
+    <xacro:macro name="gazebo_blue" params="reference">
+        <gazebo_emissive_color reference="${reference}" rgba="0.0 0.0 1.0 1"/>
+    </xacro:macro>
+
+    <xacro:macro name="gazebo_red" params="reference">
+        <gazebo_emissive_color reference="${reference}" rgba="1.0 0.0 0.0 1"/>
+    </xacro:macro>
+
+    <xacro:macro name="gazebo_yellow" params="reference">
+        <gazebo_emissive_color reference="${reference}" rgba="1.0 1.0 0.0 1"/>
+    </xacro:macro>
+
+</robot>

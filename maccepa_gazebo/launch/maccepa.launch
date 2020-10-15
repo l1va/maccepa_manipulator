@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="paused" value="true"/>
+        <arg name="world_name" value="$(find maccepa_gazebo)/worlds/maccepa.world"/>
+    </include>
+
+    <param name="robot_description"
+           command="$(find xacro)/xacro --inorder $(find maccepa_description)/robots/maccepa_testbench.urdf.xacro"/>
+
+    <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model"
+          args=" -urdf -model maccepa -param robot_description -z 1.0" respawn="false" output="screen"/>
+
+    <rosparam command="load" file="$(find maccepa_gazebo)/config/gazebo_control.yaml"/>
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+          respawn="false" output="screen">
+        <remap from="/joint_states" to="/maccepa/joint_states"/>
+    </node>
+
+</launch>
+

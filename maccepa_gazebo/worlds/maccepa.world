@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+    <world name="default">
+
+        <gui>
+            <camera name="user_camera">
+                <pose>0.0 2.0 1.0 0.0 0.0 -1.570796</pose>
+            </camera>
+        </gui>
+
+        <physics type="ode">
+            <gravity>0.000000 0.000000 -9.810000</gravity>
+            <ode>
+                <solver>
+                    <type>quick</type>
+                    <!-- DEFAULT 50 -->
+                    <iters>100</iters>
+                </solver>
+            </ode>
+        </physics>
+
+        <include>
+            <uri>model://sun</uri>
+        </include>
+
+    </world>
+</sdf>

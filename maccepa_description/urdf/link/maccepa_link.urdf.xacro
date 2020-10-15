@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<robot name="maccepa" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="maccepa_link" params="name length mass material">
+
+    <!-- slender rod along x-axis of length L and mass M -->
+    <link name="${name}">
+      <inertial>
+        <origin xyz="${length/2} 0 0" rpy="0 0 0"/>
+        <mass value="${mass}"/>
+        <inertia ixx="0" ixy="0" ixz="0" iyy="${mass*length*length/12}" iyz="0" izz="${mass*length*length/12}"/>
+      </inertial>
+
+      <visual>
+        <origin xyz="${length/2} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${length} 0.01 0.01"/>
+        </geometry>
+        <material name="${material}"/>
+      </visual>
+
+      <!-- no collision -->
+
+    </link>
+  </xacro:macro>
+
+</robot>

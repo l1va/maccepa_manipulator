@@ -1,0 +1,6 @@
+<launch>
+    <group ns="maccepa">
+        <include file="$(find encoders)/launch/encoders.launch"/>
+        <include file="$(find motors)/launch/motors.launch"/>
+    </group>
+</launch>

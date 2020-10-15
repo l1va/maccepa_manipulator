@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<robot>
+    <gazebo>
+        <!--<plugin filename="libgazebo_ros_control.so" name="ros_control">-->
+            <!--<robotNamespace>/maccepa</robotNamespace>-->
+        <!--</plugin>-->
+
+        <plugin name="maccepa_shoulder" filename="libmaccepa_plugin.so">
+            <joint>shoulder</joint>
+            <command_topic>/shoulder/command</command_topic>
+            <stiffness_topic>/shoulder/stiffness</stiffness_topic>
+            <pos_topic>/shoulder/position</pos_topic>
+            <!-- Maccepa 2.0 parameters BEGIN -->
+            <k>3742</k><!-- [N/m] spring constant -->
+            <B>0.02</B><!-- [m] length of B segment -->
+            <C>0.04</C><!-- [m] length of C segment -->
+            <R>0.015</R><!-- [m] radius of circular part of camdisk -->
+            <R_pretension>0.01</R_pretension><!-- [m] motor 2 spool radius -->
+            <!-- Maccepa 2.0 parameters END -->
+            <joint_motor>shoulder_motor_joint</joint_motor>
+        </plugin>
+
+        <plugin name="maccepa_elbow" filename="libmaccepa_plugin.so">
+            <joint>elbow</joint>
+            <command_topic>/elbow/command</command_topic>
+            <stiffness_topic>/elbow/stiffness</stiffness_topic>
+            <pos_topic>/elbow/position</pos_topic>
+            <!-- Maccepa 2.0 parameters BEGIN -->
+            <k>3742</k><!-- [N/m] spring constant -->
+            <B>0.02</B><!-- [m] length of B segment -->
+            <C>0.04</C><!-- [m] length of C segment -->
+            <R>0.015</R><!-- [m] radius of circular part of camdisk -->
+            <R_pretension>0.01</R_pretension><!-- [m] motor 2 spool radius -->
+            <!-- Maccepa 2.0 parameters END -->
+            <joint_motor>elbow_motor_joint</joint_motor>
+        </plugin>
+    </gazebo>
+</robot>

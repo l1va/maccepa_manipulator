@@ -1,0 +1,9 @@
+<launch>
+    <node name="raw_encoders_data" pkg="encoders" type="encoder_data_from_arduino.py" output="screen" clear_params="true">
+        <param name="port_adress" value="/dev/ttyUSB0" />
+    </node>
+    <node name="encoder_to_joint_state" pkg="encoders" type="encoder_to_joint_state.py" output="screen" clear_params="true">
+        <param name="first_encoder_offset" type="int" value="221007" />
+        <param name="second_encoder_offset" type="int" value="307536" />
+    </node>
+</launch>

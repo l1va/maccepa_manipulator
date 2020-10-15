@@ -1,0 +1,16 @@
+<package>
+  <name>maccepa_gazebo</name>
+  <version>1.0.0</version>
+  <description>MACCEPA testbench gazebo package</description>
+  <maintainer email="s.golousov@innopolis.ru">asQue</maintainer>
+
+  <license>BSD</license>
+
+  <author email="s.golousov@innopolis.ru">asQue</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>maccepa_description</run_depend>
+  <run_depend>gazebo_ros</run_depend> 
+
+</package>

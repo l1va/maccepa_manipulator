@@ -1,0 +1,4 @@
+float32 motor_1_pose
+float32 motor_2_pose
+float32 motor_3_pose
+float32 motor_4_pose
