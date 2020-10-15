@@ -13,9 +13,10 @@
       </inertial>
 
       <visual>
-        <origin xyz="${length/2} 0 0" rpy="0 0 0"/>
+        <!--<origin xyz="${length/2} 0 0" rpy="0 0 0"/>-->
         <geometry>
-          <box size="${length} 0.005 0.005"/>
+          <!--<box size="${length} 0.005 0.005"/>-->
+          <mesh filename="package://maccepa_description/stl/camdisk.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="${material}"/>
       </visual>

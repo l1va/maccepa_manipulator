@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<robot>
+    <gazebo>
+        <plugin filename="libgazebo_ros_control.so" name="ros_control">
+            <robotNamespace>/maccepa</robotNamespace>
+        </plugin>
+
+        <plugin filename="libmaccepa_plugin.so" name="maccepa_shoulder">
+            <joint>shoulder</joint>
+            <cardioid_motor_command_topic>$(arg motor_1_topic)</cardioid_motor_command_topic>
+            <pretension_motor_command_topic>$(arg motor_2_topic)</pretension_motor_command_topic>
+            <motors_state_topic>$(arg shoulder_motors_state_topic)</motors_state_topic>
+            <!-- Maccepa 2.0 parameters BEGIN -->
+            <k>3742</k><!-- [N/m] spring constant -->
+            <B>0.02</B><!-- [m] length of B segment -->
+            <C>0.04</C><!-- [m] length of C segment -->
+            <R>0.015</R><!-- [m] radius of circular part of camdisk -->
+            <R_pretension>0.01</R_pretension><!-- [m] motor 2 spool radius -->
+            <initial_pretension>1</initial_pretension><!-- [rad] motor 2 initial pretension -->
+            <!-- Maccepa 2.0 parameters END -->
+            <cardioid_motor_joint>shoulder_motor_joint</cardioid_motor_joint>
+        </plugin>
+
+        <plugin filename="libmaccepa_plugin.so" name="maccepa_elbow">
+            <joint>elbow</joint>
+            <cardioid_motor_command_topic>$(arg motor_3_topic)</cardioid_motor_command_topic>
+            <pretension_motor_command_topic>$(arg motor_4_topic)</pretension_motor_command_topic>
+            <motors_state_topic>$(arg elbow_motors_state_topic)</motors_state_topic>
+            <!-- Maccepa 2.0 parameters BEGIN -->
+            <k>3742</k><!-- [N/m] spring constant -->
+            <B>0.02</B><!-- [m] length of B segment -->
+            <C>0.04</C><!-- [m] length of C segment -->
+            <R>0.015</R><!-- [m] radius of circular part of camdisk -->
+            <R_pretension>0.01</R_pretension><!-- [m] motor 2 spool radius -->
+            <initial_pretension>1</initial_pretension><!-- [rad] motor 2 initial pretension -->
+            <!-- Maccepa 2.0 parameters END -->
+            <cardioid_motor_joint>elbow_motor_joint</cardioid_motor_joint>
+        </plugin>
+
+
+        <plugin filename="libbaker_plugin.so" name="baker_wrist">
+            <joint>wrist</joint>
+            <topic>/maccepa/wrist_position_controller/command</topic>
+            <angle>${0.0}</angle>
+        </plugin>
+
+        <plugin filename="libgazebo_joint_state_publisher_plugin.so" name="gazebo_joint_state_publisher">
+            <joints>shoulder elbow wrist</joints>
+            <topic>/maccepa/gazebo_joint_states</topic>
+        </plugin>
+
+    </gazebo>
+</robot>

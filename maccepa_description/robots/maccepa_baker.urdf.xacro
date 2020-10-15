@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<robot name="maccepa" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find maccepa_description)/urdf/materials.xacro" />
+  <xacro:include filename="$(find maccepa_description)/urdf/helper_macros.urdf.xacro"/>
+
+  <xacro:include filename="$(find maccepa_description)/urdf/link/maccepa_link.urdf.xacro"/>
+  <xacro:include filename="$(find maccepa_description)/urdf/camdisk/maccepa_camdisk.urdf.xacro"/>
+  <xacro:include filename="$(find maccepa_description)/urdf/basket/basket.urdf.xacro"/>
+
+  <xacro:include filename="$(find maccepa_description)/gazebo/gazebo_baker.urdf.xacro"/>
+
+  <xacro:property name="link_length" value="0.25"/><!-- [m] -->
+  <xacro:property name="link_mass" value="1"/><!-- [kg] -->
+  <xacro:property name="camdisk_length" value="0.04"/><!-- [m] -->
+
+  <link name="world"/>
+
+  <!-- Dummy link holding robot base coordinate frame -->
+  <link name="base">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.5"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.5 -0.06 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="1.0 0.1 0.1"/>
+      </geometry>
+    </visual>
+  </link>
+  <gazebo reference="base">
+    <visual>
+      <material>
+        <ambient>0.6 0.6 0.5 1.0</ambient>
+        <diffuse>0.6 0.6 0.5 1.0</diffuse>
+        <specular>0 0 0 0</specular>
+        <!--<emissive>${rgba}</emissive>-->
+      </material>
+    </visual>
+  </gazebo>
+  <joint name="world_to_base" type="fixed">
+    <parent link="world"/>
+    <child link="base"/>
+    <origin xyz="0 0 0 " rpy="0 ${-pi/2} 0" />
+  </joint>
+
+  <!-- First Link -->
+  <maccepa_link name="arm" length="${link_length}" mass="${link_mass}" material="blue"/>
+  <gazebo_darkblue reference="arm"/>
+  <joint name="shoulder" type="revolute">
+    <parent link="base"/>
+    <child link="arm" />
+    <limit
+        lower="-10"
+        upper="10"
+        effort="1000"
+        velocity="1000" />
+    <origin xyz="0 0 0 " rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+  </joint>
+
+  <!-- Second Link -->
+  <maccepa_link name="forearm" length="${link_length}" mass="${link_mass}" material="green"/>
+  <gazebo_crimson reference="forearm"/>
+  <joint name="elbow" type="revolute">
+    <parent link="arm"/>
+    <child link="forearm" />
+    <limit
+      lower="-10"
+      upper="10"
+      effort="1000"
+      velocity="1000" />
+    <origin xyz="0.25 0 0 " rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+  </joint>
+
+  <!-- Third Link used for object catching -->
+  <!--<link name="hand">-->
+    <!--<inertial>-->
+      <!--<origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>-->
+      <!--<mass value="0.5"/>-->
+      <!--<inertia-->
+          <!--ixx="${0.5*(0.1*0.1 + 0.01*0.01)/12}" ixy="0" ixz="0"-->
+          <!--iyy="${0.5*(0.1*0.1 + 0.01*0.01)/12}" iyz="0"-->
+          <!--izz="${0.5*(0.1*0.1 + 0.1*0.1)/12}"/>-->
+    <!--</inertial>-->
+
+    <!--<visual>-->
+      <!--<origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>-->
+      <!--<geometry>-->
+        <!--<box size="0.3 0.3 0.02"/>-->
+      <!--</geometry>-->
+      <!--<material name="white"/>-->
+    <!--</visual>-->
+
+    <!--<collision>-->
+      <!--<origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>-->
+      <!--<geometry>-->
+        <!--<box size="0.3 0.3 0.02"/>-->
+      <!--</geometry>-->
+    <!--</collision>-->
+  <!--</link>-->
+  <!--<contact_surface reference="hand" />-->
+  <!--<gazebo_green reference="hand"/>-->
+  <basket name="basket" mass="0.5" wx="0.15" wy="0.15" wz="0.01" h="0.1"/>
+
+  <joint name="wrist" type="revolute">
+    <parent link="forearm"/>
+    <child link="basket" />
+    <!-- Limit due to constraints -->
+    <limit
+        lower="${-pi + 0.001}"
+        upper="${pi - 0.001}"
+        effort="1000"
+        velocity="1000" />
+    <origin xyz="${link_length + 0.01} 0 0 " rpy="0 ${pi/2} 0" />
+    <axis xyz="0 1 0" />
+    <dynamics damping="0.02" friction="0.01"/>
+  </joint>
+
+
+  <!-- Transmissions -->
+  <!-- With use of transmission and ros_control GAZEBO publishes joint states to /joint_states topic -->
+  <!-- Another way to obtain gazebo link states - use topic /gazebo/link_states -->
+  <joint_transmission_macro joint_name="shoulder"/>
+  <joint_transmission_macro joint_name="elbow"/>
+  <joint_transmission_macro joint_name="wrist"/>
+
+
+
+  <!-- Motors output shaft (visual only) -->
+  <!-- First motor -->
+  <maccepa_camdisk name="shoulder_motor" length="${camdisk_length}" material="red"/>
+  <gazebo_gold reference="shoulder_motor"/>
+  <joint name="shoulder_motor_joint" type="revolute">
+    <parent link="base"/>
+    <child link="shoulder_motor" />
+    <limit
+        lower="-10"
+        upper="10"
+        effort="1000"
+        velocity="1000" />
+    <origin xyz="0 0.005 0 " rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+  </joint>
+
+  <!-- Second motor -->
+  <maccepa_camdisk name="elbow_motor" length="${camdisk_length}" material="red"/>
+  <gazebo_gold reference="elbow_motor"/>
+  <joint name="elbow_motor_joint" type="revolute">
+    <parent link="arm"/>
+    <child link="elbow_motor" />
+    <limit
+        lower="-10"
+        upper="10"
+        effort="1000"
+        velocity="1000" />
+    <origin xyz="${link_length} 0.005 0 " rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+  </joint>
+
+</robot>
