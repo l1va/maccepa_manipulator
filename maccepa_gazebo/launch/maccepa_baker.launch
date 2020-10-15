@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<launch>
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="paused" value="true"/>
+        <arg name="world_name" value="$(find maccepa_gazebo)/worlds/maccepa.world"/>
+    </include>
+
+    <arg name="motor_1_topic" default="/maccepa_plugin/shoulder/cardioid_motor/command"/>
+    <arg name="motor_2_topic" default="/maccepa_plugin/shoulder/pretension_motor/command"/>
+    <arg name="motor_3_topic" default="/maccepa_plugin/elbow/cardioid_motor/command"/>
+    <arg name="motor_4_topic" default="/maccepa_plugin/elbow/pretension_motor/command"/>
+    <arg name="shoulder_motors_state_topic" default="/maccepa_plugin/shoulder/motors/state"/>
+    <arg name="elbow_motors_state_topic" default="/maccepa_plugin/elbow/motors/state"/>
+
+    <param name="robot_description"
+           command="$(find xacro)/xacro --inorder $(find maccepa_description)/robots/maccepa_baker.urdf.xacro
+                    motor_1_topic:=$(arg motor_1_topic)
+                    motor_2_topic:=$(arg motor_2_topic)
+                    motor_3_topic:=$(arg motor_3_topic)
+                    motor_4_topic:=$(arg motor_4_topic)
+                    shoulder_motors_state_topic:=$(arg shoulder_motors_state_topic)
+                    elbow_motors_state_topic:=$(arg elbow_motors_state_topic)
+                   "/>
+
+    <!-- spawn robot -->
+    <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model"
+          args=" -urdf -model maccepa -param robot_description -z 1.0" respawn="false" output="screen"/>
+
+    <!-- spawn brick -->
+    <!--
+    To set BRICK position use command:
+    rosservice call /gazebo/set_model_state '{model_state: {model_name: brick, pose: {position: { x: 0, y: 0, z: 2}}}}'
+    -->
+    <param name="brick_description"
+           command="$(find xacro)/xacro --inorder $(find maccepa_description)/urdf/brick/brick.urdf.xacro"/>
+    <node name="spawn_brick1" pkg="gazebo_ros" type="spawn_model"
+          args=" -urdf -model brick1 -param brick_description -z 0.1" respawn="false" output="screen"/>
+    <node name="spawn_brick2" pkg="gazebo_ros" type="spawn_model"
+          args=" -urdf -model brick2 -param brick_description -z 0.2" respawn="false" output="screen"/>
+    <node name="spawn_brick3" pkg="gazebo_ros" type="spawn_model"
+          args=" -urdf -model brick3 -param brick_description -z 0.4" respawn="false" output="screen"/>
+    
+    
+    <!-- load configuration -->
+    <rosparam command="load" file="$(find maccepa_gazebo)/config/gazebo_control.yaml"/>
+
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+          output="screen" ns="/maccepa"
+          args="wrist_position_controller joint_state_controller"/>
+
+    <node pkg="maccepa_gazebo" name="gazebo_adapter" type="adapter.py" output="screen">
+        <param name="command_position_topic" value="/maccepa/motors/set_position"/>
+        <param name="command_velocity_topic" value="/maccepa/motors/set_velocity"/>
+        <param name="motor_1_topic" value="$(arg motor_1_topic)"/>
+        <param name="motor_2_topic" value="$(arg motor_2_topic)"/>
+        <param name="motor_3_topic" value="$(arg motor_3_topic)"/>
+        <param name="motor_4_topic" value="$(arg motor_4_topic)"/>
+        <param name="motors_state_topic" value="/maccepa/motors/states"/>
+        <param name="maccepa_plugin_1_state_topic" value="$(arg shoulder_motors_state_topic)"/>
+        <param name="maccepa_plugin_2_state_topic" value="$(arg elbow_motors_state_topic)"/>
+    </node>
+
+</launch>
+

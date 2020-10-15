@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<robot name="maccepa" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Used to describe transmission between actuator and joint itself -->
+  <xacro:macro name="joint_transmission_macro" params="joint_name">
+    <transmission name="${joint_name}_transmission">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${joint_name}">
+        <!-- We use EffortJointInterface to say gazebo, that this joint should be actuated by torque -->
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${joint_name}_actuator">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+
+</robot>

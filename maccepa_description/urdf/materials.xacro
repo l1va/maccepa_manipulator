@@ -23,14 +23,14 @@
                     <ambient>${rgba}</ambient>
                     <diffuse>${rgba}</diffuse>
                     <specular>0 0 0 0</specular>
-                    <emissive>${rgba}</emissive>
+                    <!--<emissive>${rgba}</emissive>-->
                 </material>
             </visual>
         </gazebo>
     </xacro:macro>
 
     <xacro:macro name="gazebo_green" params="reference">
-        <gazebo_emissive_color reference="${reference}" rgba="0.0 1.0 0.0 1"/>
+        <gazebo_emissive_color reference="${reference}" rgba="0.0 1.0 0.0 0.3"/>
     </xacro:macro>
 
     <xacro:macro name="gazebo_blue" params="reference">
@@ -43,6 +43,47 @@
 
     <xacro:macro name="gazebo_yellow" params="reference">
         <gazebo_emissive_color reference="${reference}" rgba="1.0 1.0 0.0 1"/>
+    </xacro:macro>
+
+    <xacro:macro name="contact_surface" params="reference">
+        <gazebo reference="${reference}">
+            <!-- for some reason none of these parameters don't apply in gazebo-->
+            <!--<collision>-->
+                <!--<surface>-->
+                    <!--<bounce>-->
+                        <!--<restitution_coefficient>0.0</restitution_coefficient>-->
+                    <!--</bounce>-->
+                    <!--<friction>-->
+                        <!--<torsional>&lt;!&ndash; works only with ODE &ndash;&gt;-->
+                            <!--<coefficient>1.0</coefficient>-->
+                            <!--<surface_radius>0.01</surface_radius>-->
+                            <!--<use_patch_radius>false</use_patch_radius>-->
+                        <!--</torsional>-->
+                        <!--<ode>-->
+                            <!--<mu>0.8</mu>-->
+                            <!--<mu2>0.8</mu2>-->
+                        <!--</ode>-->
+                    <!--</friction>-->
+                    <!--<contact>-->
+                        <!--<collide_without_contact>1</collide_without_contact>-->
+                        <!--<poissons_ratio>0.1</poissons_ratio>-->
+                        <!--<elastic_modulus>1</elastic_modulus>-->
+                        <!--<ode>-->
+                            <!--<kp>100000</kp>-->
+                            <!--<kd>1000.0</kd>-->
+                            <!--<max_vel>100000.0</max_vel>-->
+                            <!--<min_depth>0.001</min_depth>-->
+                        <!--</ode>-->
+                    <!--</contact>-->
+                <!--</surface>-->
+            <!--</collision>-->
+
+            <!-- while parameters set as follows apply -->
+            <minDepth value="0.01"/>
+            <maxVel value="0.0"/>
+            <mu1 value="0.8"/>
+            <mu2 value="0.8"/>
+        </gazebo>
     </xacro:macro>
 
 </robot>

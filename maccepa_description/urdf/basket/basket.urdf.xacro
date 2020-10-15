@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<robot name="basket" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="basket_side" params="name parent_name wx wy wz offset_x offset_y">
+    <link name="${name}">
+      <inertial>
+        <mass value="0.001"/>
+        <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+      </inertial>
+
+      <visual>
+        <geometry>
+          <box size="${wx} ${wy} ${wz}"/>
+        </geometry>
+      </visual>
+
+      <collision>
+        <geometry>
+          <box size="${wx} ${wy} ${wz}"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${parent_name}_to_${name}" type="fixed">
+      <parent link="${parent_name}"/>
+      <child link="${name}" />
+      <origin xyz="${offset_x} ${offset_y} ${wz/2} " rpy="0 0 0" />
+    </joint>
+
+    <contact_surface reference="${name}" />
+    <gazebo_green reference="${name}"/>
+  </xacro:macro>
+
+
+  <xacro:macro name="basket" params="name mass wx wy wz h">
+    <link name="${name}">
+      <inertial>
+        <mass value="${mass}"/>
+        <inertia
+            ixx="${mass*(wy*wy + wz*wz)/12}" ixy="0" ixz="0"
+            iyy="${mass*(wx*wx + wz*wz)/12}" iyz="0"
+            izz="${mass*(wx*wx + wy*wy)/12}"/>
+      </inertial>
+
+      <visual>
+        <geometry>
+          <box size="${wx} ${wy} ${wz}"/>
+        </geometry>
+      </visual>
+
+      <collision>
+        <geometry>
+          <box size="${wx} ${wy} ${wz}"/>
+        </geometry>
+      </collision>
+    </link>
+    <contact_surface reference="${name}" />
+    <gazebo_green reference="${name}"/>
+
+    <basket_side name="north_side" parent_name="${name}" wx="${wx}" wy="0.01"  wz="${h}" offset_x="0"        offset_y="${wy/2}"/>
+    <basket_side name="south_side" parent_name="${name}" wx="${wx}" wy="0.01"  wz="${h}" offset_x="0"        offset_y="${-wy/2}"/>
+    <basket_side name="east_side"  parent_name="${name}" wx="0.01"  wy="${wy}" wz="${h}" offset_x="${-wx/2}" offset_y="0"/>
+    <basket_side name="west_side"  parent_name="${name}" wx="0.01"  wy="${wy}" wz="${h}" offset_x="${wx/2}"  offset_y="0"/>
+
+  </xacro:macro>
+ </robot>
+
